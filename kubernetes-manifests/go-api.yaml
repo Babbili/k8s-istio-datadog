@@ -1,0 +1,96 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: apps
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: goapi  
+  name: goapi
+  namespace: apps
+spec:
+  selector:
+    matchLabels:
+      app: goapi
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: goapi    
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsNonRoot: true
+        runAsGroup: 3000
+        fsGroup: 2000
+      containers:
+        - name: goapi
+          image: babbili/go-books-api:b878944c8
+          imagePullPolicy : Always       
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+            privileged: false
+          resources:
+            requests:
+              cpu: 100m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
+          ports:
+          - containerPort: 50051
+      serviceAccount: goapi
+      serviceAccountName: goapi
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: goapi
+  namespace: apps
+  labels:
+    app: goapi
+spec:
+  type: ClusterIP
+  selector:
+    app: goapi
+  ports:
+    - name: http
+      port: 50051
+      targetPort: 50051
+      protocol: TCP
+
+---
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app: goapi
+  name: goapi
+  namespace: apps
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: goapi-svca-token
+  namespace: apps
+  annotations:
+    kubernetes.io/service-account.name: "goapi"
+type: kubernetes.io/service-account-token
