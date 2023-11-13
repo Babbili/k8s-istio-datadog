@@ -68,6 +68,9 @@ func main() {
 	e.Use(middleware.Recover())
 
 	// Routes
+	e.GET("/", func(c echo.Context) error {
+		return c.String(http.StatusOK, "Go books API!\n")
+	})
 	e.GET("/books", getAllBooks)
 	e.POST("/books", createBook)
 	e.GET("/books/:id", getBook)

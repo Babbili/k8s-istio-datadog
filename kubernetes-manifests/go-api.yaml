@@ -70,7 +70,7 @@ spec:
     app: goapi
   ports:
     - name: http
-      port: 50051
+      port: 80
       targetPort: 50051
       protocol: TCP
 
