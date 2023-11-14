@@ -118,7 +118,7 @@ metadata:
   namespace: apps
 spec:
   hosts:
-  - "*"
+  - goapi.apps.svc.cluster.local
   gateways:
   - istio-system/gateway
   http:
@@ -127,3 +127,20 @@ spec:
         host: goapi.apps.svc.cluster.local
         port:
           number: 80
+
+---
+
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: alpine-vs
+  namespace: apps
+spec:
+  hosts:
+  - alpine.apps.svc.cluster.local
+  http:
+  - route:
+    - destination:
+        host: alpine.apps.svc.cluster.local
+        port:
+          number: 5000
