@@ -1,0 +1,21 @@
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: ip-pool
+  namespace: metallb-system
+spec:
+  addresses:
+  - 172.18.0.10-172.18.0.200
+  # - 172.18.0.0/16
+
+---
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: metallb-ip-adv
+  namespace: metallb-system
+spec:
+  ipAddressPools:
+  - ip-pool
+  interfaces:
+  - eth1
