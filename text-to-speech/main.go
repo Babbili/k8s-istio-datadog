@@ -4,17 +4,30 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
+	shell "text-to-speech/ops/sh"
 
 	texttospeech "cloud.google.com/go/texttospeech/apiv1"
 	"cloud.google.com/go/texttospeech/apiv1/texttospeechpb"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
+	"google.golang.org/api/option"
 )
 
+// Handler
+func echotts(c echo.Context) error {
+	return c.String(http.StatusOK, "text-to-peech Go!")
+}
+
 func main() {
+	out := shell.Native(os.Args[0])
+	fmt.Printf("GC serviceaccount creds created %v\n", out)
+
 	// Instantiates a client.
 	ctx := context.Background()
 
-	client, err := texttospeech.NewClient(ctx)
+	client, err := texttospeech.NewClient(ctx, option.WithCredentialsFile(os.Getenv("SA_PATH")))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -51,4 +64,17 @@ func main() {
 		log.Fatal(err)
 	}
 	fmt.Printf("Audio content written to file: %v\n", filename)
+
+	// Echo instance
+	e := echo.New()
+
+	// Middleware
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
+
+	// Routes
+	e.GET("/", echotts)
+
+	// Start server
+	e.Logger.Fatal(e.Start(":1323"))
 }
