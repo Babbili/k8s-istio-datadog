@@ -52,6 +52,20 @@ spec:
               memory: 128Mi
           ports:
           - containerPort: 50051
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 50051
+            initialDelaySeconds: 3
+            periodSeconds: 4
+            failureThreshold: 8
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 50051
+            initialDelaySeconds: 3
+            periodSeconds: 8
+            failureThreshold: 16
       serviceAccount: goapi
       serviceAccountName: goapi
 

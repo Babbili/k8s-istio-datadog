@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 	"sync"
+	"time"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -60,6 +61,17 @@ func getAllBooks(c echo.Context) error {
 	return c.JSON(http.StatusOK, books)
 }
 
+// Kubernetes healthProbes
+func healthProbes(c echo.Context) error {
+	started := time.Now()
+	duration := time.Now().Sub(started)
+	if duration.Seconds() > 10 {
+		return echo.NewHTTPError(http.StatusInternalServerError)
+	} else {
+		return c.String(http.StatusOK, "OK")
+	}
+}
+
 func main() {
 	e := echo.New()
 
@@ -75,6 +87,8 @@ func main() {
 	e.POST("/books", createBook)
 	e.GET("/books/:id", getBook)
 	e.DELETE("/books/:id", deleteBook)
+
+	e.GET("/healthz", healthProbes)
 
 	// Start server
 	e.Logger.Fatal(e.Start(":50051"))
