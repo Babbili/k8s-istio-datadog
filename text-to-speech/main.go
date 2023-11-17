@@ -21,8 +21,11 @@ func echotts(c echo.Context) error {
 }
 
 func main() {
-	out := shell.Native(os.Args[0])
-	fmt.Printf("GC serviceaccount creds created %v\n", out)
+	shell.Native(os.Args[0])
+	fmt.Println("GC serviceaccount creds created")
+
+	books := shell.GetText(os.Args[0])
+	fmt.Printf("Books available are %v\n", books)
 
 	// Instantiates a client.
 	ctx := context.Background()
@@ -38,7 +41,7 @@ func main() {
 	req := texttospeechpb.SynthesizeSpeechRequest{
 		// Set the text input to be synthesized.
 		Input: &texttospeechpb.SynthesisInput{
-			InputSource: &texttospeechpb.SynthesisInput_Text{Text: "Hello, World!"},
+			InputSource: &texttospeechpb.SynthesisInput_Text{Text: books},
 		},
 		// Build the voice request, select the language code ("en-US") and the SSML
 		// voice gender ("neutral").
