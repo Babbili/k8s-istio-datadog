@@ -1,32 +1,11 @@
 
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  labels:
-    app: text-to-speech
-  name: text-to-speech
-  namespace: apps
-
----
-
-apiVersion: v1
-kind: Secret
-metadata:
-  name: text-to-speech-svca-token
-  namespace: apps
-  annotations:
-    kubernetes.io/service-account.name: "text-to-speech"
-type: kubernetes.io/service-account-token
-
----
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: text-to-speech 
-    version: v1 
-  name: text-to-speech
+    app: text-to-speech
+    version: v2
+  name: text-to-speech-canary
   namespace: apps
 spec:
   selector:
@@ -42,11 +21,11 @@ spec:
     metadata:
       labels:
         app: text-to-speech 
-        version: v1   
+        version: v2   
     spec:
       containers:
         - name: text-to-speech
-          image: babbili/text-to-speech:e3b4f2527
+          image: babbili/text-to-speech:py075b11e
           imagePullPolicy : Always       
           securityContext:
             allowPrivilegeEscalation: false
@@ -68,22 +47,3 @@ spec:
           - containerPort: 1323
       serviceAccount: text-to-speech
       serviceAccountName: text-to-speech
-
----
-
-apiVersion: v1
-kind: Service
-metadata:
-  name: text-to-speech
-  namespace: apps
-  labels:
-    app: text-to-speech
-spec:
-  type: ClusterIP
-  selector:
-    app: text-to-speech
-  ports:
-    - name: http
-      port: 80
-      targetPort: 1323
-      protocol: TCP
