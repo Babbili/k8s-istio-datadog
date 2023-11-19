@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	gettext "text-to-speech/gettext"
 	shell "text-to-speech/ops/sh"
 
 	texttospeech "cloud.google.com/go/texttospeech/apiv1"
@@ -24,8 +25,8 @@ func main() {
 	shell.Native(os.Args[0])
 	fmt.Println("GC serviceaccount creds created")
 
-	books := shell.GetText(os.Args[0])
-	fmt.Printf("Books available are %v\n", books)
+	// will be passed as text-to-speech req input
+	books := gettext.Gettex()
 
 	// Instantiates a client.
 	ctx := context.Background()

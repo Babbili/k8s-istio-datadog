@@ -25,13 +25,14 @@ kind: Deployment
 metadata:
   labels:
     app: text-to-speech 
-    version: v1 
+    version: v1
   name: text-to-speech
   namespace: apps
 spec:
   selector:
     matchLabels:
       app: text-to-speech
+      version: v1
   replicas: 1
   strategy:
     rollingUpdate:
@@ -42,7 +43,7 @@ spec:
     metadata:
       labels:
         app: text-to-speech 
-        version: v1   
+        version: v1
     spec:
       containers:
         - name: text-to-speech
