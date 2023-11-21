@@ -1,13 +1,11 @@
 from flask import Flask
 import os
 from google.cloud import texttospeech
-from ops.sh.shell import shell
 
 app = Flask(__name__)
 
 
 def main():
-    shell()
     # Instantiates a client
     client = texttospeech.TextToSpeechClient.from_service_account_json(os.getenv('SA_PATH'))
     
