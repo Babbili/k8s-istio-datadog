@@ -11,6 +11,7 @@ spec:
   selector:
     matchLabels:
       app: text-to-speech
+      version: v2
   replicas: 1
   strategy:
     rollingUpdate:
@@ -21,11 +22,11 @@ spec:
     metadata:
       labels:
         app: text-to-speech 
-        version: v2   
+        version: v2
     spec:
       containers:
-        - name: text-to-speech
-          image: babbili/text-to-speech:py075b11e
+        - name: text-to-speech-canary
+          image: babbili/text-to-speech-py:79931c98a
           imagePullPolicy : Always       
           securityContext:
             allowPrivilegeEscalation: false
@@ -45,5 +46,14 @@ spec:
               memory: 128Mi
           ports:
           - containerPort: 1323
+          volumeMounts:
+          - mountPath: "/gcsa"
+            name: tts-v
+      volumes:
+        - name: tts-v
+          persistentVolumeClaim:
+            claimName: tts-pvc
+      nodeSelector:
+        kubernetes.io/hostname: cluster-istio-worker3
       serviceAccount: text-to-speech
       serviceAccountName: text-to-speech
