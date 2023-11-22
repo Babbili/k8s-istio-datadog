@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"os"
 	gettext "text-to-speech/gettext"
-	shell "text-to-speech/ops/sh"
 
 	texttospeech "cloud.google.com/go/texttospeech/apiv1"
 	"cloud.google.com/go/texttospeech/apiv1/texttospeechpb"
@@ -22,9 +21,6 @@ func echotts(c echo.Context) error {
 }
 
 func main() {
-	shell.Native(os.Args[0])
-	fmt.Println("GC serviceaccount creds created")
-
 	// will be passed as text-to-speech req input
 	books := gettext.Gettex()
 

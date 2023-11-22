@@ -67,6 +67,15 @@ spec:
               memory: 128Mi
           ports:
           - containerPort: 1323
+          volumeMounts:
+          - mountPath: "/gcsa"
+            name: tts-go-v
+      volumes:
+        - name: tts-go-v
+          persistentVolumeClaim:
+            claimName: tts-pvc
+      nodeSelector:
+        kubernetes.io/hostname: cluster-istio-worker3          
       serviceAccount: text-to-speech
       serviceAccountName: text-to-speech
 
