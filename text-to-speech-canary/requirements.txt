@@ -1,2 +1,3 @@
 flask
+requests
 google-cloud-texttospeech==2.14.2

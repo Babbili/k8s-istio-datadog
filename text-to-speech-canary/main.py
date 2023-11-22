@@ -1,4 +1,5 @@
 from flask import Flask
+from get_text.get_text import gettext
 import os
 from google.cloud import texttospeech
 
@@ -6,11 +7,13 @@ app = Flask(__name__)
 
 
 def main():
+    # get books from goapi to pass them as a texttospeech input 
+    books = gettext()
     # Instantiates a client
     client = texttospeech.TextToSpeechClient.from_service_account_json(os.getenv('SA_PATH'))
     
     # Set the text input to be synthesized
-    synthesis_input = texttospeech.SynthesisInput(text="Hello, World!")
+    synthesis_input = texttospeech.SynthesisInput(text=books)
     
     # Build the voice request, select the language code ("en-US") and the ssml
     # voice gender ("neutral")
