@@ -153,3 +153,30 @@ spec:
         host: text-to-speech.apps.svc.cluster.local
         port:
           number: 80
+        subset: v1
+      # send 70% of requests to v1 (tts-go) 
+      weight: 70
+    - destination:
+        host: text-to-speech.apps.svc.cluster.local
+        port:
+          number: 80
+        subset: v2
+      # send 30% of requests to v2 the canary version (tts-py)
+      weight: 30
+
+---
+
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: text-to-speech-destination-rule
+  namespace: apps
+spec:
+  host: text-to-speech.apps.svc.cluster.local
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+  - name: v2
+    labels:
+      version: v2
