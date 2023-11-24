@@ -10,6 +10,9 @@ kind: Deployment
 metadata:
   labels:
     app: alpine
+    tags.datadoghq.com/env: prod
+    tags.datadoghq.com/service: alpine
+    tags.datadoghq.com/version: v1
   name: alpine
   namespace: apps
 spec:
@@ -26,6 +29,9 @@ spec:
     metadata:
       labels:
         app: alpine
+        tags.datadoghq.com/env: prod
+        tags.datadoghq.com/service: alpine
+        tags.datadoghq.com/version: v1
     spec:
       securityContext:
         runAsUser: 1000
