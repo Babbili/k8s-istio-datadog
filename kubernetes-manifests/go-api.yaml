@@ -9,7 +9,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: goapi  
+    app: goapi
+    tags.datadoghq.com/env: prod
+    tags.datadoghq.com/service: goapi
+    tags.datadoghq.com/version: v1
   name: goapi
   namespace: apps
 spec:
@@ -25,13 +28,26 @@ spec:
   template:
     metadata:
       labels:
-        app: goapi    
+        app: goapi
+        tags.datadoghq.com/env: prod
+        tags.datadoghq.com/service: goapi
+        tags.datadoghq.com/version: v1
+      annotations:
+        ad.datadoghq.com/goapi.logs: >-
+          [{
+            "source": "go",
+            "service": "goapi"
+          }]
     spec:
       securityContext:
         runAsUser: 1000
         runAsNonRoot: true
         runAsGroup: 3000
         fsGroup: 2000
+      volumes:
+        - hostPath:
+            path: /var/run/datadog/
+          name: apmsocketpath
       containers:
         - name: goapi
           image: babbili/go-books-api:b878944c8
@@ -66,6 +82,22 @@ spec:
             initialDelaySeconds: 3
             periodSeconds: 8
             failureThreshold: 16
+          volumeMounts:
+            - name: apmsocketpath
+              mountPath: /var/run/datadog
+          env:
+            - name: DD_ENV
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.labels['tags.datadoghq.com/env']
+            - name: DD_SERVICE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.labels['tags.datadoghq.com/service']
+            - name: DD_VERSION
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.labels['tags.datadoghq.com/version']      
       serviceAccount: goapi
       serviceAccountName: goapi
 

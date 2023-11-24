@@ -24,7 +24,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: text-to-speech 
+    app: text-to-speech
+    tags.datadoghq.com/env: prod
+    tags.datadoghq.com/service: text-to-speech
+    tags.datadoghq.com/version: v1
     version: v1
   name: text-to-speech
   namespace: apps
@@ -42,8 +45,17 @@ spec:
   template:
     metadata:
       labels:
-        app: text-to-speech 
+        app: text-to-speech
+        tags.datadoghq.com/env: prod
+        tags.datadoghq.com/service: text-to-speech
+        tags.datadoghq.com/version: v1
         version: v1
+      annotations:
+        ad.datadoghq.com/text-to-speech.logs: >-
+          [{
+            "source": "go",
+            "service": "text-to-speech"
+          }]
     spec:
       containers:
         - name: text-to-speech
@@ -58,6 +70,19 @@ spec:
           envFrom:
             - secretRef:
                 name: sa-key
+          env:
+            - name: DD_ENV
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.labels['tags.datadoghq.com/env']
+            - name: DD_SERVICE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.labels['tags.datadoghq.com/service']
+            - name: DD_VERSION
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.labels['tags.datadoghq.com/version']
           resources:
             requests:
               cpu: 100m
@@ -70,10 +95,15 @@ spec:
           volumeMounts:
           - mountPath: "/gcsa"
             name: tts-go-v
+          - name: apmsocketpath
+            mountPath: /var/run/datadog
       volumes:
         - name: tts-go-v
           persistentVolumeClaim:
             claimName: tts-pvc
+        - hostPath:
+            path: /var/run/datadog/
+          name: apmsocketpath
       nodeSelector:
         kubernetes.io/hostname: cluster-istio-worker3          
       serviceAccount: text-to-speech
