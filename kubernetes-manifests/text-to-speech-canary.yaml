@@ -4,6 +4,9 @@ kind: Deployment
 metadata:
   labels:
     app: text-to-speech
+    tags.datadoghq.com/env: prod
+    tags.datadoghq.com/service: text-to-speech
+    tags.datadoghq.com/version: v2
     version: v2
   name: text-to-speech-canary
   namespace: apps
@@ -21,8 +24,19 @@ spec:
   template:
     metadata:
       labels:
-        app: text-to-speech 
+        app: text-to-speech
+        tags.datadoghq.com/env: prod
+        tags.datadoghq.com/service: text-to-speech
+        tags.datadoghq.com/version: v2
+        admission.datadoghq.com/enabled: "true"
         version: v2
+      annotations:
+        admission.datadoghq.com/python-lib.version: v2.1.2
+        ad.datadoghq.com/text-to-speech-canary.logs: >-
+          [{
+            "source": "python",
+            "service": "text-to-speech"
+          }]
     spec:
       containers:
         - name: text-to-speech-canary
@@ -37,6 +51,13 @@ spec:
           envFrom:
             - secretRef:
                 name: sa-key
+          env:
+            - name: DD_PROFILING_ENABLED
+              value: "true"
+            - name: DD_LOGS_INJECTION
+              value: "true"
+            - name: DD_TRACE_SAMPLE_RATE
+              value: "1"
           resources:
             requests:
               cpu: 100m
