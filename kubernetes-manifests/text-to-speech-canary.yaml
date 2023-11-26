@@ -31,7 +31,7 @@ spec:
         admission.datadoghq.com/enabled: "true"
         version: v2
       annotations:
-        admission.datadoghq.com/python-lib.version: v2.1.2
+        admission.datadoghq.com/python-lib.version: v2.3.1
         ad.datadoghq.com/text-to-speech-canary.logs: >-
           [{
             "source": "python",
