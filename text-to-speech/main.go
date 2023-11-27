@@ -8,6 +8,8 @@ import (
 	"os"
 	gettext "text-to-speech/gettext"
 
+	echotrace "gopkg.in/DataDog/dd-trace-go.v1/contrib/labstack/echo.v4"
+
 	texttospeech "cloud.google.com/go/texttospeech/apiv1"
 	"cloud.google.com/go/texttospeech/apiv1/texttospeechpb"
 	"github.com/labstack/echo/v4"
@@ -69,6 +71,7 @@ func main() {
 	e := echo.New()
 
 	// Middleware
+	e.Use(echotrace.Middleware(echotrace.WithServiceName("text-to-speech")))
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
