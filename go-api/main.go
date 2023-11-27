@@ -6,6 +6,8 @@ import (
 	"sync"
 	"time"
 
+	echotrace "gopkg.in/DataDog/dd-trace-go.v1/contrib/labstack/echo.v4"
+
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -76,6 +78,7 @@ func main() {
 	e := echo.New()
 
 	// Middleware
+	e.Use(echotrace.Middleware(echotrace.WithServiceName("goapi")))
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
