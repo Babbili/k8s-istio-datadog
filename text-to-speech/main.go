@@ -9,6 +9,7 @@ import (
 	gettext "text-to-speech/gettext"
 
 	echotrace "gopkg.in/DataDog/dd-trace-go.v1/contrib/labstack/echo.v4"
+	"gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer"
 
 	texttospeech "cloud.google.com/go/texttospeech/apiv1"
 	"cloud.google.com/go/texttospeech/apiv1/texttospeechpb"
@@ -67,11 +68,19 @@ func main() {
 	}
 	fmt.Printf("Audio content written to file: %v\n", filename)
 
+	tracer.Start(
+		tracer.WithEnv("prod"),
+		tracer.WithService("text-to-speech"),
+		tracer.WithServiceVersion("v1"),
+	)
+	// When the tracer is stopped, it will flush everything it has to the Datadog Agent before quitting.
+	defer tracer.Stop()
+
 	// Echo instance
 	e := echo.New()
 
 	// Middleware
-	e.Use(echotrace.Middleware(echotrace.WithServiceName("text-to-speech")))
+	e.Use(echotrace.Middleware(echotrace.WithServiceName("text-to-speech"), echotrace.WithCustomTag("env", "prod")))
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 

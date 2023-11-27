@@ -78,7 +78,7 @@ func main() {
 	e := echo.New()
 
 	// Middleware
-	e.Use(echotrace.Middleware(echotrace.WithServiceName("goapi")))
+	e.Use(echotrace.Middleware(echotrace.WithServiceName("goapi"), echotrace.WithCustomTag("env", "prod")))
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
