@@ -6,6 +6,9 @@ import (
 	"sync"
 	"time"
 
+	echotrace "gopkg.in/DataDog/dd-trace-go.v1/contrib/labstack/echo.v4"
+	"gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer"
+
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -73,9 +76,19 @@ func healthProbes(c echo.Context) error {
 }
 
 func main() {
+	// start dd-trace
+	tracer.Start(
+		tracer.WithEnv("prod"),
+		tracer.WithService("goapi"),
+		tracer.WithServiceVersion("v1"),
+	)
+	// When the tracer is stopped, it will flush everything it has to the Datadog Agent before quitting.
+	defer tracer.Stop()
+
 	e := echo.New()
 
 	// Middleware
+	e.Use(echotrace.Middleware(echotrace.WithServiceName("goapi"), echotrace.WithCustomTag("env", "prod")))
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
