@@ -313,32 +313,33 @@ below is Infrastructure List, show Kubernetes nodes status, CPU usage for each n
 
 containers map grouped by `short_image`, the red containers indecate high consumption on the metric selected while the green shows a low consumption and a good state
 
-![containers-map](../datadog/img/094624.png)
+<img src="./datadog/img/094624.png" width="100%" height="auto" alt="containers map">
 
-![container-map-metrics](../datadog/img/095022.png)
+<img src="./datadog/img/095022.png" width="100%" height="auto" alt="container map metrics">
 
 total CPU% and RSS memory timeline for each container
 
-![containers-cpu-rss](../datadog/img/095210.png)
+<img src="./datadog/img/095210.png" width="100%" height="auto" alt="containers cpu rss memory">
 
 list of all containers in the cluster with state and metrics of each
 
-![containers-state](../datadog/img/095433.png)
+<img src="./datadog/img/095433.png" width="100%" height="auto" alt="containers state">
+
 
 Kubernetes pods with their status, we can tell easily if any pod's state is crashing, pending, container creating or Running. cpu and memory usage limits, ips, ...
 
-![k8s-pods](../datadog/img/095627.png)
+<img src="./datadog/img/095627.png" width="100%" height="auto" alt="k8s pods">
 
 
 Kuberentes lusters, namespaces, nodes, deployments and other resources
 
-![k8s-deployments](../datadog/img/095740.png)
+<img src="./datadog/img/095740.png" width="100%" height="auto" alt="k8s deployments">
 
 
 Kuberenetes persistent volumes, and persistent volume claims that was created for the text-to-speech service, shows status `bound` 
 
-![k8s-pv](../datadog/img/100033.png)
-![k8s-pvc](../datadog/img/100107.png)
+<img src="./datadog/img/100033.png" width="100%" height="auto" alt="k8s pv">
+<img src="./datadog/img/100107.png" width="100%" height="auto" alt="k8s pvc">
 
 
 ## Application Performance Monitoring (APM)
@@ -347,43 +348,49 @@ APM can gives us visibility into Traces, code Profiles ,Service Catalog and Serv
 
 below is the `Service List` shows req/s P99 latency and error rate per services
 
-![svc-list](../datadog/img/114525.png)
+<img src="./datadog/img/114525.png" width="100%" height="auto" alt="APM service list">
 
 the grpc client is the python client calling Google Cloud texttospeech api and performing tts function
 
-![grpc-client](../datadog/img/114412.png)
-![grpc-c](../datadog/img/113151.png)
+<img src="./datadog/img/114412.png" width="100%" height="auto" alt="traces grpc client svc">
+
+<img src="./datadog/img/113151.png" width="100%" height="auto" alt="traces grpc client svc">
 
 
-APM `Traces` 
-![traces](../datadog/img/111842.png)
+**APM `Traces`**
+
+<img src="./datadog/img/111842.png" width="100%" height="auto" alt="APM traces">
 
 here we can see the time spans for each trace
 
-![trace-span](../datadog/img/111635.png)
+<img src="./datadog/img/111635.png" width="100%" height="auto" alt="APM traces spans">
 
-![trace-s](../datadog/img/111920.png)
+<img src="./datadog/img/111920.png" width="100%" height="auto" alt="APM traces spans">
 
 
-APM code `Profilers` shows resources and CPU time for each function in our code
+
+**APM code `Profilers`** 
+
+Profilers go deep inside the code to show us metrics such as CPU time for each function in our code
 below is the profiler for the python text-to-speech service
 
-![profiler](../datadog/img/101410.png)
+<img src="./datadog/img/101410.png" width="100%" height="auto" alt="APM Profiler">
 
 
 ## Logs Management
 
 Logs Management collects and visualize in one place all our applications containers' logs, network logs, firewall logs, system and infrastructure logs 
 
-![logs](../datadog/img/101502.png)
+<img src="./datadog/img/101502.png" width="100%" height="auto" alt="Logs Mangement">
 
 we can filter and group logs according to `service`, `env`, `status`, `@http.status_code`, `@http.url`, `@Method` , ...
 
-![goapi-logs](../datadog/img/101924.png)
+<img src="./datadog/img/101924.png" width="100%" height="auto" alt="goapi logs">
 
-![status-err](../datadog/img/101818.png)
+<img src="./datadog/img/101818.png" width="100%" height="auto" alt="status error">
 
-![tts-logs](../datadog/img/102117.png)
+<img src="./datadog/img/102117.png" width="100%" height="auto" alt="tts logs">
 
-![method-logs](../datadog/img/120149.png)
+<img src="./datadog/img/120149.png" width="100%" height="auto" alt="http method logs">
+
 
