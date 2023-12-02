@@ -308,7 +308,7 @@ Datadog Infrastructure Monitoring monitors & Tracks your hosts metrics, containe
 
 below is Infrastructure List, show Kubernetes nodes status, CPU usage for each node, IOwait ,... 
 
-![infra-list](../datadog/img/114801.png)
+<img src="../datadog/img/114801.png" width="100%" height="auto" alt="infrastructure list">
 
 
 containers map grouped by `short_image`, the red containers indecate high consumption on the metric selected while the green shows a low consumption and a good state
