@@ -149,6 +149,11 @@ NAME      AGE
 gateway   82s
 ```
 
+apply **Istio Peer Authentication** resource which will force `mTLS` traffic for all workloads in the application namespace
+
+```bash
+kubectl apply -f kubernetes-manifests/istio-peer-authentication.yaml
+```
 
 
 ## Install MetalLB
