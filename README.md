@@ -1,5 +1,5 @@
 
-# Kuberentes applications with Istio Service mesh, MetalLB load balancer, and Datadog monitoring
+# Kubernetes applications with Istio Service mesh, MetalLB load balancer, and Datadog monitoring
 
 This repository showcases Kubernetes microservices application with Istio service mesh enhancing Istio traffic management and security, MetalLB load balancing and Datadog monitoring & observability covering Kubernetes infrastructure monitoring, application performance monitoring, metrics, distributed traces, code profilers, and logs management
 
@@ -31,10 +31,10 @@ kubectl label namespace apps istio-injection=enabled
 
 the application is a GO API service, text-to-speech service and a client, 
 
-the Go API uses Echo framework to perform CRUD operation, additionally it has `/healthz` route performing Kubernetes health probes, to check the service replicas' readiness and liveness.
+the *Go API* uses Echo framework to perform CRUD operation, additionally it has `/healthz` route performing Kubernetes health probes, to check the service replicas' readiness and liveness.
 
-the text-to-speech service will communicate with Go api covering its response into audio file, i also configured its Kubernetes manifests to have a `presistent-volume` attached,
-the text-to-speech service has two versions, `v1` i made with Go and `v2` as a canary version with Python, i applied **istio canary deployments** to send **70%** of the requests to the Golang version `v1` and **30%** of requests to the canary version `v2` python, and i'll be observing the two versions' performance later with Datadog APM.
+the *text-to-speech* service will communicate with Go api converting its response into audio file, i also configured its Kubernetes manifests to have a `persistent-volume` attached,
+the text-to-speech service has two versions, `v1` i made with *Go* and `v2` as a canary version with *Python*, i applied **istio canary deployments** to send **70%** of requests to the Golang version `v1` and **30%** of requests to the canary version `v2` python, and i'll be observing the two versions' performance later with Datadog APM.
 
 
 ```bash
@@ -50,7 +50,7 @@ kubectl apply -f kubernetes-manifests/text-to-speech-canary.yaml
 ```
 ```bash
 kubectl -n apps get all
-# we can see in the output that each pod has 2 containers, one is the application's container and the other is th envoy proxy sidecar container which got injected by Istio
+# we can see in the output that each pod has 2 containers, one is the application's container and the other is the envoy proxy sidecar container which got injected by Istio
 # output
 NAME                                         READY   STATUS    RESTARTS      AGE
 pod/alpine-78d69bd9d-6d7g9                   2/2     Running   0             8m48s
@@ -149,7 +149,7 @@ NAME      AGE
 gateway   82s
 ```
 
-apply **Istio Peer Authentication** resource which will force `mTLS` traffic for all workloads in the application namespace
+apply **Istio Peer Authentication** resource which will force secure `mTLS` traffic for all workloads in the application namespace
 
 ```bash
 kubectl apply -f kubernetes-manifests/istio-peer-authentication.yaml
@@ -160,7 +160,7 @@ kubectl apply -f kubernetes-manifests/istio-peer-authentication.yaml
 
 MetalLB is a load-balancer implementation for bare metal/on-prem Kubernetes clusters
 
-Preparation : If your cluster is using `kube-proxy` in IPVS mode, you have to enable strict ARP mode
+Preparation : If your cluster is using `kube-proxy` in IPVS mode, you have to enable *strict ARP* mode
 You can achieve this by editing kube-proxy config in the cluster
 ```bash
 kubectl get configmap kube-proxy -n kube-system -o yaml | \
@@ -175,7 +175,7 @@ To install MetalLB, apply the manifest
 kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.12/config/manifests/metallb-native.yaml
 
 ```
-wait untill  `metallb-system/speaker` daemonsets are running, then apply MetalLB `IPAddressPool` and `L2Advertisement` which i configured the load balancer ip-address to be advertised in
+wait untill  `metallb-system/speaker` daemonsets are running, then apply MetalLB `IPAddressPool` and `L2Advertisement` which i configured the load balancer ip-address in
 ```bash
 kubectl apply -f kubernetes-manifests/metallb-config.yaml
 
@@ -201,7 +201,7 @@ echo $GATEWAY_IP
 ```
 
 
-i'll exec into the client pod to create intries for the Go books API using `curl`
+i'll exec into the client pod to create entries for the Go books API using `curl`
 
 ```bash
 kubectl -n apps exec -it pod/alpine-78d69bd9d-6d7g9 -- sh
@@ -232,7 +232,7 @@ kubectl -n apps exec -it pod/alpine-78d69bd9d-6d7g9 -- sh
 * Connection #0 to host goapi.apps.svc.cluster.local left intact
 ```
 
-we also can check **Istio canary deployments** implementation but sending requests to `text-to-speech` service, we an see that `70%` of requests are sent to the Go version v1, and `30%` of requests are sent to the Python canary verion v2
+we also can check **Istio canary deployments** implementation by sending requests to `text-to-speech` service, we can see that `70%` of requests are sent to the *Go version v1*, and `30%` of requests are sent to the *Python canary verion v2*
 
 ```bash
 kubectl -n apps exec -it pod/alpine-78d69bd9d-6d7g9 -- sh
@@ -265,7 +265,7 @@ TTS canary version (Python)!
 
 # Monitoring & Observability with Datadog
 
-install Datadog with `datdog-operator` Helm charts
+install Datadog with `datadog-operator` Helm charts
 
 ```bash
 kubectl create ns datadog
@@ -283,7 +283,7 @@ NOTES:
 ```
 
 
-apply `datadog-agent.yaml` file which will collect Traces, Metrics and Logs from the out cluster, the file includes Log Mangement, Network Performance Monitoring (NPM), Cluster Agent, Cluster checks runners, Events & Processes collection enabled, and Application Performance Monitoring (APM) with **hostPort** configured to allow Istio sidecars to connect with the agent
+apply `datadog-agent.yaml` file which will collect Traces, Metrics and Logs from the cluster, the file includes Log Mangement, Network Performance Monitoring (NPM), Cluster Agent, Cluster checks runners, Events & Processes collection enabled, and Application Performance Monitoring (APM)
 
 ```bash
 kubectl -n datadog apply -f datadog/datadog-agent.yaml
@@ -309,14 +309,14 @@ istiooperator.install.istio.io/installed-state configured
 
 ## Datadog Infrastructure Monitoring
 
-Datadog Infrastructure Monitoring monitors & Tracks your hosts metrics, containers, processes
+Datadog Infrastructure Monitoring monitors & tracks your hosts metrics, containers, processes
 
-below is Infrastructure List, show Kubernetes nodes status, CPU usage for each node, IOwait ,... 
+below is Infrastructure List, showing Kubernetes nodes status, CPU usage for each node, IOwait ,... 
 
 <img src="./datadog/img/114801.png" width="100%" height="auto" alt="infrastructure list">
 
 
-containers map grouped by `short_image`, the red containers indecate high consumption on the metric selected while the green shows a low consumption and a good state
+containers map grouped by `short_image`, the red containers indicate high consumption on the metric selected while the green shows a low consumption and a good state
 
 <img src="./datadog/img/094624.png" width="100%" height="auto" alt="containers map">
 
@@ -336,12 +336,12 @@ Kubernetes pods with their status, we can tell easily if any pod's state is cras
 <img src="./datadog/img/095627.png" width="100%" height="auto" alt="k8s pods">
 
 
-Kuberentes lusters, namespaces, nodes, deployments and other resources
+Kubernetes clusters, namespaces, nodes, deployments and other resources
 
 <img src="./datadog/img/095740.png" width="100%" height="auto" alt="k8s deployments">
 
 
-Kuberenetes persistent volumes, and persistent volume claims that was created for the text-to-speech service, shows status `bound` 
+Kubernetes persistent volumes, and persistent volume claims that was created for the text-to-speech service, shows status `bound` 
 
 <img src="./datadog/img/100033.png" width="100%" height="auto" alt="k8s pv">
 <img src="./datadog/img/100107.png" width="100%" height="auto" alt="k8s pvc">
